@@ -1,30 +1,26 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-// import './style.css';
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
-export default function App() {
+const InfiniteScrollByIntersection = () => {
   const [data, setData] = useState([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
 
-  const LIMIT = 15;
-  const loadRef = useRef(null);
-  const loadingRef = useRef(false)
+  const PAGE_SIZE = 21;
+  const scrollRef = useRef(null);
+  const loadingRef = useRef(false);
 
-  const fetchData = useCallback(
-    async () => {
-      if(loadingRef.current) return
-      loadingRef.current=true
+  const fetchData = useCallback(async () => {
+    if (loadingRef.current) return;
+    loadingRef.current = true;
 
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      const res = await fetch(
-        `https://jsonplaceholder.typicode.com/posts?_limit=${LIMIT}&_page=${
-          page
-        }`
-      );
-      const json = await res.json();
-      setData((prev) => [...prev, ...json]);
-      loadingRef.current = false;
-  },[page])
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    const skip = page * PAGE_SIZE;
+    const res = await fetch(
+      `https://dummyjson.com/products?&limit=${PAGE_SIZE}&skip=${skip}`,
+    );
+    const json = await res.json();
+    setData((prev) => [...prev, ...json?.products]);
+    loadingRef.current = false;
+  }, [page]);
 
   useEffect(() => {
     fetchData();
@@ -40,38 +36,37 @@ export default function App() {
       {
         threshold: 0,
         root: null,
-        rootMargin: '100px',
-      }
+        rootMargin: "100px",
+      },
     );
-    if (loadRef.current) {
-      observer.observe(loadRef.current);
+    if (scrollRef.current) {
+      observer.observe(scrollRef.current);
     }
 
     return () => observer.disconnect();
   }, []);
+
   return (
     <>
-      <div
-        style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}
-      >
-        {data.map((item) => (
-          <div
-            style={{
-              width: '300px',
-              margin: '10px',
-              padding: '5px',
-              border: '1px solid black',
-            }}
-            key={item.id}
-          >
-            <span>{item.id}</span>
-            <h3>{item.title}</h3>
-            <h4>{item.body}</h4>
-          </div>
-        ))}
+      <div className="p-10">
+        <div className="grid grid-cols-3 gap-10">
+          {data.map((item) => (
+            <div className="w-100 border p-5" key={item.id}>
+              <h1 className="font-bold">{item.id}</h1>
+              <h1 className="text-xl font-bold">{item.title}</h1>
+              <p>{item.description}</p>
+            </div>
+          ))}
+        </div>
+        <div ref={scrollRef}></div>
       </div>
-      <div ref={loadRef}></div>
-      {loadingRef.current ? <p>Loading....</p> : ''}
+      {loadingRef.current ? (
+        <h1 className="text-center text-xl font-bold">Loading...</h1>
+      ) : (
+        ""
+      )}
     </>
   );
-}
+};
+
+export default InfiniteScrollByIntersection;

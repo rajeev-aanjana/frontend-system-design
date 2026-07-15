@@ -65,7 +65,7 @@ export const router = createBrowserRouter([
     },
     {
       path: "/infinite-scroll",
-      element : <InfiniteScrollByEvent />
+      element : <InfiniteScrollByIntersection />
     },
     {
       path: "/practice",
