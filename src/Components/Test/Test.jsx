@@ -1,70 +1,55 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Test = () => {
   const [data, setData] = useState([]);
-  const [page, setPage] = useState(0);
+  const [input, setInput] = useState("");
+  const [focus, setFocus] = useState(false);
 
-  const PAGE_SIZE = 21;
-  const scrollRef = useRef(null);
-  const loadingRef = useRef(false);
-
-  const fetchData = useCallback(async () => {
-    if (loadingRef.current) return;
-    loadingRef.current = true;
-
-    await new Promise((resolve) => setTimeout(resolve, 400));
-    const skip = page * PAGE_SIZE;
-    const res = await fetch(
-      `https://dummyjson.com/products?&limit=${PAGE_SIZE}&skip=${skip}`,
-    );
+  const fetchData = async () => {
+    console.log(input);
+    const res = await fetch(`https://dummyjson.com/recipes/search?q=${input}`);
     const json = await res.json();
-    setData((prev) => [...prev, ...json?.products]);
-    loadingRef.current = false;
-  }, [page]);
+    setData(json?.recipes);
+  };
 
   useEffect(() => {
-    fetchData();
-  }, [page]);
+    const timer = setTimeout(fetchData, 300);
+    return () => clearTimeout(timer);
+  }, [input]);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !loadingRef.current) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      {
-        threshold: 0,
-        root: null,
-        rootMargin: "100px",
-      },
-    );
-    if (scrollRef.current) {
-      observer.observe(scrollRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
+  const selectSearch = (item) => {
+    setInput(item);
+    setFocus(false)
+  };
   return (
     <>
-      <div className="p-10">
-        <div className="grid grid-cols-3 gap-10">
-          {data.map((item) => (
-            <div className="w-100 border p-5" key={item.id}>
-              <h1 className="font-bold">{item.id}</h1>
-              <h1 className="text-xl font-bold">{item.title}</h1>
-              <p>{item.description}</p>
+      <div className="text-center py-10">
+        <div>
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            type="text"
+            placeholder="search here..."
+            className="border w-100 p-2"
+            onBlur={() => setFocus(false)}
+            onFocus={() => setFocus(true)}
+          />
+          {focus && data.length > 0 && (
+            <div className="h-100 overflow-auto w-100 border m-auto"
+            onMouseDown={(e)=>e.preventDefault()}>
+              {data.map((item) => (
+                <div
+                  key={item.id}
+                  className="text-left p-2 cursor-pointer hover:bg-gray-200"
+                  onClick={() => selectSearch(item.name)}
+                >
+                  <span className="">{item.name}</span>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
-        <div ref={scrollRef}></div>
       </div>
-      {loadingRef.current ? (
-        <h1 className="text-center text-xl font-bold">Loading...</h1>
-      ) : (
-        ""
-      )}
     </>
   );
 };
