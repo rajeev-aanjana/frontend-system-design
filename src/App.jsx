@@ -2,6 +2,7 @@ import "./App.css";
 import Accordion from "./Components/Accordion/Accordion";
 import AutocompleteSearch from "./Components/AutocompleteSearch/AutocompleteSearch";
 import Carousel from "./Components/Carousel/Carousel";
+import DragAndDrop from "./Components/Drag&Drop/DragAndDrop";
 import Footer from "./Components/Footer/Footer";
 import Header from "./Components/Header/Header";
 import Home from "./Components/Home/Home";
@@ -66,6 +67,10 @@ export const router = createBrowserRouter([
     {
       path: "/infinite-scroll",
       element : <InfiniteScrollByIntersection />
+    },
+    {
+      path: "/drag&drop",
+      element : <DragAndDrop />
     },
     {
       path: "/practice",

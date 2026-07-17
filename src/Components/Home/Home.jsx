@@ -38,6 +38,11 @@ const Home = () => {
       description: "Load data dynamically while scrolling.",
     },
     {
+      title: "Drag & Drop (Kanban Board)",
+      path: "/drag&drop",
+      description: "Drag & Drop functionality like jira manges task states.",
+    },
+    {
       title: "Practice/Test",
       path: "/practice",
       description: "Practice for interview.",

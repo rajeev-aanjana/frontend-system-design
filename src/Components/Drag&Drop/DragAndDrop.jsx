@@ -1,3 +1,4 @@
+
 import React, { useRef, useState } from "react";
 
 const INITIAL_DATA = {
@@ -35,7 +36,7 @@ const INITIAL_DATA = {
   ],
 };
 
-const Test = () => {
+const DragAndDrop = () => {
   const [data, setData] = useState(INITIAL_DATA);
   const [input, setInput] = useState("")
   const dragStateRef = useRef();
@@ -111,4 +112,4 @@ const Test = () => {
   );
 };
 
-export default Test;
+export default DragAndDrop;
