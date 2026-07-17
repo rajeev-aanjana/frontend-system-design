@@ -37,7 +37,9 @@ const INITIAL_DATA = {
 
 const Test = () => {
   const [data, setData] = useState(INITIAL_DATA);
-  const [input, setInput] = useState("")
+  const [input, setInput] = useState("");
+  const [editingTask, setEditingTask] = useState(null);
+
   const dragStateRef = useRef();
   const dragItemRef = useRef();
 
@@ -52,7 +54,7 @@ const Test = () => {
     e.target.style.opacity = "1";
   };
 
-  console.log("Current Data:---> ", data)
+  // console.log("Current Data:---> ", data)
   const handleDrop = (e, targetState) => {
     const sourceState = dragStateRef.current;
     const item = dragItemRef.current;
@@ -62,24 +64,62 @@ const Test = () => {
         (task) => task.id !== item.id,
       );
       newData[targetState] = [...newData[targetState], item];
-      console.log("New data---:", newData);
+      // console.log("New data---:", newData);
       return newData;
     });
   };
 
-  const handleTaskAdd = ()=>{
-    if(!input.trim()) return
-    // setData((prev)=> [...prev.Todo, {id: Date.now(), task: input}])
-    setData((prev)=> ({...prev, Todo:[...prev.Todo, {id: Date.now(), task: input}]}))
-    setInput("")
+  const handleTaskAdd = () => {
+    if (!input.trim()) return;
+
+    if (editingTask !== null) {
+      setData((prev) => ({
+        ...prev,
+        [editingTask.state]: prev[editingTask.state].map((item) =>
+          item.id === editingTask.id ? { ...item, task: input } : item,
+        ),
+      }));
+
+      setEditingTask(null)
+    }
+    else{
+    setData((prev) => ({
+      ...prev,
+      Todo: [...prev.Todo, { id: Date.now(), task: input }],
+    }));
   }
-  console.log("After adding task from input:---", data)
+    setInput("");
+  };
+  // console.log("After adding task from input:---", data)
+
+  const editTask = (state, item) => {
+    setInput(item.task);
+    setEditingTask({id: item.id, state});
+  };
+
+  const deleteTask = (state, id) => {
+    setData((prev) => ({
+      ...prev,
+      [state]: prev[state].filter((item) => item.id !== id),
+    }));
+  };
   return (
     <>
       <div className="p-10 text-center">
         <div className="mb-10">
-          <input value={input} onChange={(e)=>setInput(e.target.value)} className="border p-2 w-100" type="text" placeholder="types here.." />
-          <button onClick={handleTaskAdd} className="border p-2 mx-2 hover:bg-blue-500 cursor-pointer">Add Task</button>
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            className="border p-2 w-100"
+            type="text"
+            placeholder="types here.."
+          />
+          <button
+            onClick={handleTaskAdd}
+            className="border p-2 mx-2 hover:bg-blue-500 cursor-pointer"
+          >
+            {editingTask ? "Update Task" : "Add Task"}
+          </button>
         </div>
         <div className="flex justify-around">
           {Object.keys(data).map((state, indx) => (
@@ -98,9 +138,23 @@ const Test = () => {
                     handleDragEnd(e);
                   }}
                   key={item.id}
-                  className={`p-2 my-2 cursor-grab ${state==="Todo" ? "bg-blue-500" : "bg-green-500"} ${state==="Completed"?"bg-red-600":""}`}
+                  className={`p-2 my-2 cursor-grab flex justify-between ${state === "Todo" ? "bg-blue-500" : "bg-green-500"} ${state === "Completed" ? "bg-red-600" : ""}`}
                 >
                   <h2 className="text-xl">{item.task}</h2>
+                  <div className="">
+                    <button
+                      className="cursor-pointer mx-2"
+                      onClick={() => editTask(state, item)}
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      className="cursor-pointer"
+                      onClick={() => deleteTask(state, item.id)}
+                    >
+                      ❌
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
