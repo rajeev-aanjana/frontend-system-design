@@ -1,4 +1,3 @@
-
 import React, { useRef, useState } from "react";
 
 const INITIAL_DATA = {
@@ -38,7 +37,9 @@ const INITIAL_DATA = {
 
 const DragAndDrop = () => {
   const [data, setData] = useState(INITIAL_DATA);
-  const [input, setInput] = useState("")
+  const [input, setInput] = useState("");
+  const [editId, setEditId] = useState(null);
+
   const dragStateRef = useRef();
   const dragItemRef = useRef();
 
@@ -53,7 +54,7 @@ const DragAndDrop = () => {
     e.target.style.opacity = "1";
   };
 
-  console.log("Current Data:---> ", data)
+  console.log("Current Data:---> ", data);
   const handleDrop = (e, targetState) => {
     const sourceState = dragStateRef.current;
     const item = dragItemRef.current;
@@ -68,19 +69,55 @@ const DragAndDrop = () => {
     });
   };
 
-  const handleTaskAdd = ()=>{
-    if(!input.trim()) return
-    // setData((prev)=> [...prev.Todo, {id: Date.now(), task: input}])
-    setData((prev)=> ({...prev, Todo:[...prev.Todo, {id: Date.now(), task: input}]}))
-    setInput("")
-  }
-  console.log("After adding task from input:---", data)
+  const handleTaskAdd = () => {
+    if (!input.trim()) return;
+
+    if (editId !== null) {
+      setData((prev) => ({
+        ...prev,
+        [editId.state]: prev[editId.state].map((item) =>
+          item.id === editId.id ? { ...item, task: input } : item,
+        ),
+      }));
+    } else {
+      setData((prev) => ({
+        ...prev,
+        Todo: [...prev.Todo, { id: Date.now(), task: input }],
+      }));
+    }
+    setEditId(null);
+    setInput("");
+  };
+
+  const deleteTask = (state, id) => {
+    setData((prev) => ({
+      ...prev,
+      [state]: prev[state].filter((item) => item.id !== id),
+    }));
+  };
+
+  const editTask = (state, item) => {
+    setInput(item.task);
+    setEditId({ id: item.id, state });
+  };
+  console.log("After adding task from input:---", data);
   return (
     <>
       <div className="p-10 text-center">
         <div className="mb-10">
-          <input value={input} onChange={(e)=>setInput(e.target.value)} className="border p-2 w-100" type="text" placeholder="types here.." />
-          <button onClick={handleTaskAdd} className="border p-2 mx-2 hover:bg-blue-500 cursor-pointer">Add Task</button>
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            className="border p-2 w-100"
+            type="text"
+            placeholder="types here.."
+          />
+          <button
+            onClick={handleTaskAdd}
+            className="border p-2 mx-2 hover:bg-blue-500 cursor-pointer"
+          >
+            {editId ? "Update Task" : "Add Task"}
+          </button>
         </div>
         <div className="flex justify-around">
           {Object.keys(data).map((state, indx) => (
@@ -99,9 +136,23 @@ const DragAndDrop = () => {
                     handleDragEnd(e);
                   }}
                   key={item.id}
-                  className={`p-2 my-2 cursor-grab ${state==="Todo" ? "bg-blue-500" : "bg-green-500"} ${state==="Completed"?"bg-red-600":""}`}
+                  className={`flex justify-between p-2 my-2 cursor-grab ${state === "Todo" ? "bg-blue-500" : "bg-green-500"} ${state === "Completed" ? "bg-red-600" : ""}`}
                 >
                   <h2 className="text-xl">{item.task}</h2>
+                  <div>
+                    <button
+                      onClick={() => editTask(state, item)}
+                      className="cursor-pointer mx-2"
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      onClick={() => deleteTask(state, item.id)}
+                      className="cursor-pointer"
+                    >
+                      ❌
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
