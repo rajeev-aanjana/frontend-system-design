@@ -8,6 +8,7 @@ import Header from "./Components/Header/Header";
 import Home from "./Components/Home/Home";
 import InfiniteScrollByEvent from "./Components/InfiniteScrollByEvent";
 import InfiniteScrollByIntersection from "./Components/InfiniteScrollByIntersection";
+import OtpInput from "./Components/OTP_Input/OtpInput";
 import Pagination from "./Components/Pagination/Pagination";
 import Products from "./Components/Pagination/Products";
 import PasswordGenerator from "./Components/PasswordGenerator";
@@ -71,6 +72,10 @@ export const router = createBrowserRouter([
     {
       path: "/drag&drop",
       element : <DragAndDrop />
+    },
+    {
+      path: "/otp-input",
+      element : <OtpInput />
     },
     {
       path: "/practice",

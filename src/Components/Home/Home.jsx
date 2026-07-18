@@ -43,6 +43,12 @@ const Home = () => {
       description: "Drag & Drop functionality like jira manges task states.",
     },
     {
+      title: "OTP Input",
+      path: "/otp-input",
+      description:
+        "Same functionality like real OTP, we can paste the otp automatically focus on next once the filled is fill by value.",
+    },
+    {
       title: "Practice/Test",
       path: "/practice",
       description: "Practice for interview.",
@@ -51,7 +57,6 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-6">
-      
       {/* Hero Section */}
       <div className="text-center mb-12">
         <h1 className="text-5xl font-bold text-gray-800 mb-4">
@@ -59,15 +64,14 @@ const Home = () => {
         </h1>
 
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          A collection of React projects built using modern concepts
-          like hooks, routing, infinite scrolling, pagination,
-          reusable components, and Tailwind CSS.
+          A collection of React projects built using modern concepts like hooks,
+          routing, infinite scrolling, pagination, reusable components, and
+          Tailwind CSS.
         </p>
       </div>
 
       {/* Project Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-        
         {projects.map((project) => (
           <div
             key={project.title}
@@ -77,9 +81,7 @@ const Home = () => {
               {project.title}
             </h2>
 
-            <p className="text-gray-600 mb-6">
-              {project.description}
-            </p>
+            <p className="text-gray-600 mb-6">{project.description}</p>
 
             <Link
               to={project.path}
