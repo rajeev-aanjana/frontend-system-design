@@ -1,80 +1,230 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useRef } from "react";
 
-const OTP_LIMIT = 6;
+const FOLDER_STRUCTURE = [
+  {
+    id: "1",
+    name: "public",
+    isFolder: true,
+    children: [
+      {
+        id: "2",
+        name: "vite.svg",
+        isFolder: false,
+      },
+    ],
+  },
+  {
+    id: "3",
+    name: "src",
+    isFolder: true,
+    children: [
+      {
+        id: "4",
+        name: "components",
+        isFolder: true,
+        children: [
+          {
+            id: "5",
+            name: "Card.jsx",
+            isFolder: false,
+          },
+          {
+            id: "6",
+            name: "Header.jsx",
+            isFolder: false,
+          },
+          {
+            id: "7",
+            name: "Nav.jsx",
+            isFolder: false,
+          },
+        ],
+      },
+      {
+        id: "8",
+        name: "pages",
+        isFolder: true,
+        children: [
+          {
+            id: "9",
+            name: "Home.jsx",
+            isFolder: false,
+          },
+          {
+            id: "10",
+            name: "Main.jsx",
+            isFolder: false,
+          },
+          {
+            id: "11",
+            name: "Footer.jsx",
+            isFolder: false,
+          },
+          {
+            id: "12",
+            name: "Index",
+            isFolder: true,
+            children: [
+              {
+                id: "13",
+                name: "Index.jsx",
+                isFolder: false,
+              },
+              {
+                id: "16",
+                name: "index.css",
+                isFolder: false,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "14",
+    name: "App.jsx",
+    isFolder: false,
+  },
+  {
+    id: "15",
+    name: "app.css",
+    isFolder: false,
+  },
+];
 
-const Test = () => {
-  const [otpInput, setOtpInput] = useState(new Array(OTP_LIMIT).fill(""));
-  const otpRef = useRef([]);
+const List = ({ folderData, setData }) => {
+  const [isExpandable, setIsExpandable] = useState({});
+  const [input, setInput] = useState("");
+  const [addingFolderId, setAddingFolderId] = useState(null);
 
-  useEffect(() => {
-    otpRef.current[0].focus();
-  }, []);
-  const handleChange = (e, index) => {
-    const value = e.target.value;
-    if (!value.trim() || isNaN(value)) return;
-    const newArr = [...otpInput];
-    const newValue = value.trim();
-    newArr[index] = newValue.slice(-1);
-    setOtpInput(newArr);
-    newValue && otpRef.current[index + 1]?.focus();
+  const deleteNode = (nodes, id) => {
+    return nodes
+      .filter((node) => node.id !== id)
+      .map((node) => {
+        if(node.children){
+            return {...node, children : deleteNode(node.children, id)}
+        }
+        return node
+      });
   };
 
-  const handleKeyDown = (e, index) => {
-    const key = e.key;
-    if (key === "Backspace") {
-      const newOTP = [...otpInput];
-      if (newOTP[index]) {
-        newOTP[index] = "";
-        setOtpInput(newOTP);
-      } else {
-        otpRef.current[index - 1]?.focus();
-      }
-    }
-    if(key === "ArrowLeft"){
-      otpRef.current[index-1]?.focus()
-      return
-    }
-    if(key === "ArrowRight"){
-      otpRef.current[index+1]?.focus()
-      return
-    }
+  const deleteFolder = (id) => {
+    setData((prev) => deleteNode(prev, id));
   };
 
-  const handlePaste = (e)=>{
-    e.preventDefault()
-    const pasteData = e.clipboardData.getData("text")
-    if(isNaN(pasteData)) return
-
-    const newOTP = [...otpInput];
-
-    pasteData.split("").forEach((digit,index) => {
-      if(index < OTP_LIMIT){
-        newOTP[index]=digit
+  const addNewNode = (nodes, id, newNode) => {
+    return nodes.map((node) => {
+      if (node.id === id) {
+        return {
+          ...node,
+          children: [...node.children, newNode],
+        };
       }
+      if (node.children) {
+        return {
+          ...node,
+          children: node.children
+            ? addNewNode(node.children, id, newNode)
+            : undefined,
+        };
+      }
+      return node
     });
+  };
 
-    setOtpInput(newOTP)
+  const handleAdd = (e, id) => {
+    if (e.key !== "Enter" || !input.trim()) return;
 
-    otpRef.current[Math.min(pasteData.length, OTP_LIMIT - 1)]?.focus();
-  }
+    const newNode = {
+      id: Date.now(),
+      name: input.trim(),
+      isFolder: !input.includes("."),
+      children: !input.includes(".") ? [] : undefined,
+    };
+
+    setData((prev) => addNewNode(prev, id, newNode));
+    setInput("");
+    setAddingFolderId(null);
+  };
 
   return (
-    <div className="p-5 text-center ">
-      <h1 className="font-bold text-3xl my-5">OTP Input</h1>
-      <div>
-        {otpInput.map((item, index) => (
-          <input
-            key={index}
-            ref={(input) => (otpRef.current[index] = input)}
-            value={item}
-            onChange={(e) => handleChange(e, index)}
-            onKeyDown={(e) => handleKeyDown(e, index)}
-            onPaste={(e)=>handlePaste(e)}
-            type="text"
-            className="border p-2 w-12 m-1"
-          />
-        ))}
-      </div>
+    <div className="w-70 px-5 py-1 relative">
+      {folderData.map((item) => (
+        <div key={item.id}>
+          <span
+            onClick={() =>
+              setIsExpandable((prev) => ({
+                ...prev,
+                [item.name]: !prev[item.name],
+              }))
+            }
+            className="cursor-pointer mx-2"
+          >
+            {item.isFolder && (isExpandable?.[item.name] ? "-" : "+")}
+          </span>
+          <span>{item.name}</span>
+          {item.isFolder && (
+            <span className="pl-2 text-sm">
+              <button
+                onClick={() => setAddingFolderId(item.id)}
+                className="cursor-pointer"
+              >
+                ➕
+              </button>
+            </span>
+          )}
+          <span className="pl-2 text-sm">
+            <button className="cursor-pointer">✏️</button>
+            <button
+              className="cursor-pointer"
+              onClick={() => deleteFolder(item.id)}
+            >
+              🗑️
+            </button>
+          </span>
+          {addingFolderId === item.id && (
+            <div>
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                type="text"
+                onKeyDown={(e) => handleAdd(e, item.id)}
+                className="border-white bg-gray-700"
+              />
+              <span
+                onClick={() => setAddingFolderId(null)}
+                className="mx-2 cursor-pointer"
+              >
+                X
+              </span>
+            </div>
+          )}
+
+          {isExpandable?.[item.name] && item?.children && (
+            <List folderData={item.children} setData={setData} />
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const Test = () => {
+  const [data, setData] = useState(FOLDER_STRUCTURE);
+  const [isFolderOpen, setIsFolderOpen] = useState(false);
+  return (
+    <div className="p-10 bg-black text-white">
+      <h1 className="font-bold text-xl">
+        <span
+          className="px-2 cursor-pointer"
+          onClick={() => setIsFolderOpen((prev) => !prev)}
+        >
+          {isFolderOpen ? "-" : "+"}
+        </span>
+        Folder
+      </h1>
+      {isFolderOpen && <List folderData={data} setData={setData} />}
     </div>
   );
 };
