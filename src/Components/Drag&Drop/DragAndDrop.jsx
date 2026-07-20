@@ -55,7 +55,7 @@ const DragAndDrop = () => {
   };
 
   console.log("Current Data:---> ", data);
-  
+
   const handleDrop = (e, targetState) => {
     const sourceState = dragStateRef.current;
     const item = dragItemRef.current;

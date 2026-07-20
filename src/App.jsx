@@ -3,6 +3,7 @@ import Accordion from "./Components/Accordion/Accordion";
 import AutocompleteSearch from "./Components/AutocompleteSearch/AutocompleteSearch";
 import Carousel from "./Components/Carousel/Carousel";
 import DragAndDrop from "./Components/Drag&Drop/DragAndDrop";
+import FileExplorer from "./Components/FileExplorer/FileExplorer";
 import Footer from "./Components/Footer/Footer";
 import Header from "./Components/Header/Header";
 import Home from "./Components/Home/Home";
@@ -76,6 +77,10 @@ export const router = createBrowserRouter([
     {
       path: "/otp-input",
       element : <OtpInput />
+    },
+    {
+      path: "/file-explorer",
+      element : <FileExplorer />
     },
     {
       path: "/practice",

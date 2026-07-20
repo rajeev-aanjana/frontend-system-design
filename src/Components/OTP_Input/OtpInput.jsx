@@ -82,7 +82,7 @@ const OtpInput = () => {
           />
         ))}
       </div>
-      
+
       <h2 className="mt-5 text-xl">
         OTP: <span className="font-bold">{otpInput.join("")}</span>
       </h2>

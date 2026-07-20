@@ -49,6 +49,12 @@ const Home = () => {
         "Same functionality like real OTP, we can paste the otp automatically focus on next once the filled is fill by value.",
     },
     {
+      title: "File Explorer",
+      path: "/file-explorer",
+      description:
+        "Same functionality like real File Explorer or like VS code editory expand and collaps feture add and delete folder or file.",
+    },
+    {
       title: "Practice/Test",
       path: "/practice",
       description: "Practice for interview.",
