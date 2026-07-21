@@ -55,6 +55,11 @@ const Home = () => {
         "Same functionality like real File Explorer or like VS code editory expand and collaps feture add and delete folder or file.",
     },
     {
+      title: "Progress Bar",
+      path: "/progress-bar",
+      description:"Progress bar with start and stop funtionality"
+    },
+    {
       title: "Practice/Test",
       path: "/practice",
       description: "Practice for interview.",

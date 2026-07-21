@@ -13,6 +13,7 @@ import OtpInput from "./Components/OTP_Input/OtpInput";
 import Pagination from "./Components/Pagination/Pagination";
 import Products from "./Components/Pagination/Products";
 import PasswordGenerator from "./Components/PasswordGenerator";
+import ProgressBar from "./Components/ProgressBar/ProgressBar";
 import Test from "./Components/Test/Test";
 import Todo from "./Components/Todo/Todo";
 import {createBrowserRouter, Outlet} from 'react-router-dom'
@@ -81,6 +82,10 @@ export const router = createBrowserRouter([
     {
       path: "/file-explorer",
       element : <FileExplorer />
+    },
+    {
+      path: "/progress-bar",
+      element : <ProgressBar />
     },
     {
       path: "/practice",
