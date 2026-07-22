@@ -60,6 +60,11 @@ const Home = () => {
       description:"Progress bar with start and stop funtionality"
     },
     {
+      title: "Nested Checkbox",
+      path: "/nested-checkbox",
+      description:"Nested checkbox recusrsive logic like file explorer"
+    },
+    {
       title: "Practice/Test",
       path: "/practice",
       description: "Practice for interview.",
