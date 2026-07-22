@@ -1,123 +1,51 @@
-import React, { Children, useState } from "react";
-
-const CHECKBOX_DATA = [
-  {
-    id: 1,
-    name: "Parent-1",
-    children: [
-      {
-        id: 2,
-        name: "Parent-2",
-        children: [
-          {
-            id: 3,
-            name: "Child-1",
-          },
-          {
-            id: 4,
-            name: "Child-2",
-          },
-          {
-            id: 5,
-            name: "Child-3",
-          },
-        ],
-      },
-      {
-        id: 6,
-        name: "Child-4",
-      },
-      {
-        id: 7,
-        name: "Child-5",
-      },
-    ],
-  },
-
-  {
-    id: 8,
-    name: "Parent-3",
-    children: [
-      {
-        id: 9,
-        name: "Child-6",
-      },
-      {
-        id: 10,
-        name: "Child-7",
-      },
-    ],
-  },
-  {
-    id: 11,
-    name: "Parent-4",
-  },
-];
-
-const CheckBox = ({ checkBoxes, isChecked, setIsChecked }) => {
-  const handleChecked = (checked, node) => {
-    setIsChecked((prev) => {
-      const newState = { ...prev, [node.id]: checked };
-
-      const updateChild = (node) => {
-        node.children?.forEach((child) => {
-          newState[child.id] = checked;
-          if (child?.children) {
-            updateChild(child);
-          }
-        });
-      };
-      updateChild(node);
-
-      const verifyAll = (node)=>{
-        if(!node.children) return newState[node.id] || false
-        const allChecked = node.children.every((child)=>verifyAll(child))
-        newState[node.id] = allChecked
-        return allChecked
-      }
-      CHECKBOX_DATA.forEach((node)=>verifyAll(node))
-
-      return newState;
-    });
-  };
-  return (
-    <div>
-      {checkBoxes.map((node) => (
-        <div className="px-7 py-1" key={node.id}>
-          <input
-            className="size-4 cursor-pointer"
-            type="checkbox"
-            onChange={(e) => handleChecked(e.target.checked, node)}
-            checked={isChecked[node.id] || false}
-          />
-          <span className="mx-2">{node.name}</span>
-          {node.children && (
-            <CheckBox
-              checkBoxes={node.children}
-              isChecked={isChecked}
-              setIsChecked={setIsChecked}
-            />
-          )}
-        </div>
-      ))}
-    </div>
-  );
-};
+import React, { useState } from "react";
 
 const Test = () => {
-  const [data, setData] = useState(CHECKBOX_DATA);
-  const [isChecked, setIsChecked] = useState({});
+  const [data, setData] = useState([]);
+  const [input, setInput] = useState("");
+
+  const handleAdd = (e) => {
+    if (e.key !== "Enter" || !input.trim()) return;
+
+    setData((prev) => [...prev, { id: Date.now(), name: input.trim() }]);
+    setInput("");
+  };
+
+  const deletTask = (id) => {
+    console.log(id)
+    setData((prev) => prev.filter((item) => item.id !== id));
+  };
   return (
-    <div className="p-10 text-xl">
-      <CheckBox
-        checkBoxes={data}
-        isChecked={isChecked}
-        setIsChecked={setIsChecked}
-      />
+    <div className="flex justify-center items-center h-100 w-full">
+      <div>
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => handleAdd(e)}
+          autoFocus
+          type="text"
+          placeholder="type here..."
+          className="border w-100 p-2"
+        />
+        <div className="grid grid-cols-3 gap-4 pt-5">
+          {data.map((item) => (
+            <div
+              key={item.id}
+              className="bg-gray-400 p-2 px-4 flex justify-between rounded-3xl"
+            >
+              <span>{item.name}</span>{" "}
+              <span
+                className="text-sm cursor-pointer"
+                onClick={() => deletTask(item.id)}
+              >
+                ❌
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
 
 export default Test;
-
-
