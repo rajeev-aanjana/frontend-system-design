@@ -9,6 +9,7 @@ import Header from "./Components/Header/Header";
 import Home from "./Components/Home/Home";
 import InfiniteScrollByEvent from "./Components/InfiniteScrollByEvent";
 import InfiniteScrollByIntersection from "./Components/InfiniteScrollByIntersection";
+import InputChips from "./Components/InputChips/InputChips";
 import NestedCheckbox from "./Components/NestedCheckbox/NestedCheckbox";
 import OtpInput from "./Components/OTP_Input/OtpInput";
 import Pagination from "./Components/Pagination/Pagination";
@@ -91,6 +92,10 @@ export const router = createBrowserRouter([
     {
       path: "/nested-checkbox",
       element : <NestedCheckbox />
+    },
+    {
+      path: "/input-chips",
+      element : <InputChips />
     },
     {
       path: "/practice",

@@ -65,6 +65,11 @@ const Home = () => {
       description:"Nested checkbox recusrsive logic like file explorer"
     },
     {
+      title: "Input Chips",
+      path: "/input-chips",
+      description:"Input Chips creation and deletion"
+    },
+    {
       title: "Practice/Test",
       path: "/practice",
       description: "Practice for interview.",
