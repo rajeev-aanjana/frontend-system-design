@@ -1,141 +1,161 @@
-import React, { Children, useEffect, useState } from "react";
+import React, { useState } from "react";
 
-const CHECKBOX_DATA = [
-  {
-    id: 1,
-    name: "Parent-1",
-    children: [
-      {
-        id: 2,
-        name: "Parent-2",
-        children: [
-          {
-            id: 3,
-            name: "Child-1",
-          },
-          {
-            id: 4,
-            name: "Child-2",
-          },
-          {
-            id: 5,
-            name: "Child-3",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: 6,
-    name: "Parent-3",
-    children: [
-      {
-        id: 7,
-        name: "Parent-4",
-        children: [
-          {
-            id: 133,
-            name: "Extra Child",
-          },
-          {
-            id: 8,
-            name: "Parent-5",
-            children: [
-              { id: 9, name: "Child-4" },
-              { id: 10, name: "Child-5" },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: 12,
-    name: "Parent-6",
-    children: [
-      {
-        id: 11,
-        name: "Child-7",
-      },
-    ],
-  },
-];
-
-const CheckBox = ({ checkboxData, checked, setChecked }) => {
-  const handleChange = (isChecked, node) => {
-    setChecked((prev) => {
-      const newState = { ...prev, [node.id]: isChecked };
-
-      const updateChild = (node) => {
-        node.children?.forEach((child) => {
-          newState[child.id] = isChecked;
-          if (child?.children) {
-            updateChild(child);
-          }
-        });
-      };
-
-      updateChild(node);
-
-      const updateParent = (node) => {
-        if (!node.children) return newState[node.id] || false;
-
-        const verifyAll = node.children.every((child) => updateParent(child));
-        newState[node.id] = verifyAll;
-        return verifyAll;
-      };
-
-      CHECKBOX_DATA.forEach((node) => updateParent(node));
-
-      // const verifyChecked = (node) => {
-      //   if (!node.children) return newState[node.id] || false;
-
-      //   const isAllChecked = node.children.every((child) =>
-      //     verifyChecked(child),
-      //   );
-
-      //   newState[node.id] = isAllChecked;
-
-      //   return isAllChecked;
-      // };
-
-      // CHECKBOX_DATA.forEach((node) => verifyChecked(node));
-      return newState;
-    });
-  };
+const Profile = ({ setCurrentPage }) => {
   return (
-    <div>
-      {checkboxData.map((node) => (
-        <div className="px-4" key={node.id}>
-          <input
-            className="cursor-pointer"
-            type="checkbox"
-            checked={checked[node.id] || false}
-            onChange={(e) => handleChange(e.target.checked, node)}
-          />
-          <span className="px-2">{node.name}</span>
-          {node?.children && (
-            <CheckBox
-              checkboxData={node.children}
-              checked={checked}
-              setChecked={setChecked}
+    <>
+      <div className="">
+
+        <div className="p-5 grid grid-cols-3 gap-7 w-180 ">
+          <div>
+            <label>Name:</label>
+            <input
+              type="text"
+              className="border p-1 mx-2"
+              placeholder="your name"
             />
-          )}
+          </div>
+          <div>
+            <label>Designation:</label>
+            <input
+              type="text"
+              className="border p-1 mx-2"
+              placeholder="your designation"
+            />
+          </div>
+          <div>
+            <label>Email</label>
+            <input
+              type="email"
+              className="border p-1 mx-2"
+              placeholder="your email"
+            />
+          </div>
+          <div>
+            <label>Mobile:</label>
+            <input
+              type="text"
+              className="border p-1 mx-2"
+              placeholder="your contact"
+            />
+          </div>
+          <div>
+            <label>Address:</label>
+            <input
+              type="text"
+              className="border p-1 mx-2"
+              placeholder="your address"
+            />
+          </div>
         </div>
-      ))}
-    </div>
+      </div>
+    </>
+  );
+};
+
+const Interest = ({ setCurrentPage }) => {
+  return (
+    <>
+      <div className="">
+        <div className="p-5 grid grid-cols-3 gap-7 w-240 ">
+          <div>
+            <label>Skills:</label>
+            <input
+              type="text"
+              className="border p-1 mx-2"
+              placeholder="write your skills"
+            />
+          </div>
+          <div>
+            <label>Hobbies:</label>
+            <input
+              type="text"
+              className="border p-1 mx-2"
+              placeholder="your hobbies"
+            />
+          </div>
+          <div>
+            <label>Night/Day shift:</label>
+            <input
+              type="checkbox"
+              className="border p-1 mx-2"
+            /> <span>Night</span>
+            <input
+              type="checkbox"
+              className="border p-1 mx-2"
+            /> <span>Day</span>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+const Settings = ({ setCurrentPage }) => {
+  return (
+    <>
+      <div className="">
+        <div className="p-5 grid grid-cols-3 gap-7 w-180">
+          <div>
+            <label>Name:</label>
+            <input
+              type="text"
+              className="border p-1 mx-2"
+              placeholder="your name"
+            />
+          </div>
+          <div>
+            <label>Designation:</label>
+            <input
+              type="text"
+              className="border p-1 mx-2"
+              placeholder="your designation"
+            />
+          </div>
+          <div>
+            <label>Email</label>
+            <input
+              type="email"
+              className="border p-1 mx-2"
+              placeholder="your email"
+            />
+          </div>
+          <div>
+            <label>Mobile:</label>
+            <input
+              type="text"
+              className="border p-1 mx-2"
+              placeholder="your contact"
+            />
+          </div>
+          <div>
+            <label>Address:</label>
+            <input
+              type="text"
+              className="border p-1 mx-2"
+              placeholder="your address"
+            />
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 
 const Test = () => {
-  const [checked, setChecked] = useState({});
+  const tabs = ["Profile", "Interest", "Settings"];
+  const [currentPage, setCurrentPage] = useState(tabs);
   return (
-    <div className="p-10">
-      <CheckBox
-        checkboxData={CHECKBOX_DATA}
-        checked={checked}
-        setChecked={setChecked}
-      />
+    <div className="border m-10">
+      <div className="flex gap-10 w-360">
+        {tabs.map(tab=>
+          <button className={`border cursor-pointer w-60 p-2 ${currentPage===tab ? "bg-blue-600 text-white font-bold" : ""}`} key={tab} onClick={()=> setCurrentPage(tab)}>{tab}</button>
+        )}
+      </div>
+      <div>
+        {currentPage=== "Profile" && <Profile />}
+        {currentPage=== "Interest" && <Interest />}
+        {currentPage=== "Settings" && <Settings />}
+      </div>
     </div>
   );
 };
